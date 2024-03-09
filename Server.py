@@ -1,3 +1,5 @@
+
+# Library used in code
 from flask import Flask, render_template, request, redirect, url_for, Response, flash, jsonify
 from neuralintents import BasicAssistant
 from flask_sqlalchemy import SQLAlchemy
@@ -8,10 +10,15 @@ import cv2
 import os
 
 
+# train file
+from train import assistant
+
+
 app = Flask(__name__)
 
 
 # For Database
+# configuration of the database 
 app.config['SQLALCHEMY_DATABASE_URI'] ='sqlite:///Database.db'
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
 app.secret_key = 'survey_secret'
@@ -26,8 +33,7 @@ class Survey1(db.Model):
     rating = db.Column(db.Integer)
     suggestion = db.Column(db.Text)
     srating = db.Column(db.Integer)
-    date = db.Column(db.DateTime, default = datetime.utcnow)
-
+    
 class Slider(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100), unique=True, nullable=False)
@@ -48,28 +54,24 @@ class Administration(db.Model):
     name = db.Column(db.String(100), unique=True, nullable=False)
     image = db.Column(db.LargeBinary, nullable=False)
 
-# For Sebasty Learnings
-assistant = BasicAssistant('answer.json')
-assistant.fit_model(epochs=50)
-assistant.save_model()
 
 # For Sebasty Movements
 # from SebastyControl import move_forward, move_backward, turn_left, turn_right, stop_robot
 # Sebasty Controller Settings
-#  @app.route('/control', methods=['POST'])
+# @app.route('/control', methods=['POST'])
 #  def control():
 #      direction = request.form['direction']
 
-#     #  if direction == 'forward':
-#     #      move_forward()
-#     # elif direction == 'backward':
-#     #     move_backward()
-#     # elif direction == 'left':
-#     #     turn_left()
-#     # elif direction == 'right':
-#     #     turn_right()
-#     # elif direction == 'stop':
-#     #     stop_robot()
+#      if direction == 'forward':
+#          move_forward()
+#     elif direction == 'backward':
+#         move_backward()
+#     elif direction == 'left':
+#         turn_left()
+#     elif direction == 'right':
+#         turn_right()
+#     elif direction == 'stop':
+#         stop_robot()
 
 #     return render_template('Admin.html')
 
@@ -85,6 +87,7 @@ def generate_frames():
             frame = buffer.tobytes()
             yield (b'--frame\r\n'
                    b'Content-Type: image/jpeg\r\n\r\n' + frame + b'\r\n')
+            
 @app.route('/video_feed')
 def video_feed():
     return Response(generate_frames(), mimetype='multipart/x-mixed-replace; boundary=frame')
@@ -333,4 +336,4 @@ def SebastyUI():
 if __name__ == '__main__':
     with app.app_context():
         db.create_all()
-    app.run(host='0.0.0.0', port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=False)

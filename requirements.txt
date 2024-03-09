@@ -53,3 +53,4 @@ typing_extensions==4.10.0
 urllib3==2.2.1
 Werkzeug==3.0.1
 wrapt==1.14.1
+gunicorn==21.2.0

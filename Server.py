@@ -20,7 +20,7 @@ app = Flask(__name__)
 # For Database
 # configuration of the database 
 app.config['SQLALCHEMY_DATABASE_URI'] ='sqlite:///Database.db'
-app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = True
+app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.secret_key = 'survey_secret'
 
 db = SQLAlchemy(app)
